@@ -30,47 +30,56 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, UIImagePicker
         super.viewDidLoad()
         
         prepareDelegates()
-//        fetchRecords()
+        fetchUserId()
     }
     
     //MARK: CloudKit
     
-//    func fetchRecords() {
-//        let db = CKContainer.defaultContainer().publicCloudDatabase
-//        db.fetchRecordWithID(self.userID) { record, error in
-//            // if version
-//            if let r = record {
-//                self.profileRecord = r
+    func fetchUserId() {
+        CKContainer.defaultContainer().fetchUserRecordIDWithCompletionHandler { (recordID, error) -> Void in
+            if let e = error {
+                print("error getting user record id: \(e.localizedDescription)")
+                return
+            }
+            self.userID = recordID!
+            self.fetchRecords()
+        }
+    }
+    
+    func fetchRecords() {
+        let db = CKContainer.defaultContainer().publicCloudDatabase
+        db.fetchRecordWithID(self.userID) { record, error in
+            
+            // guard version
+            guard let r = record else {
+                print("error getting user record")
+                return
+            }
+            
+            self.profileRecord = r
+            
+            print("got user record")
+            
+            dispatch_async(dispatch_get_main_queue()) {
+//                self.usernameLabel.text = r["username"] as? String ?? ""
+//                self.userTypeLabel.text = r["userType"] as? String ?? ""
 //                
-//                dispatch_async(dispatch_get_main_queue()) {
-//                    self.userNameTextField.text = r["username"] as? String ?? ""
-//                }
-//            } else {
-//                print("error getting user record")
-//            }
-//            
-//            // guard version
-//            guard let r = record else {
-//                print("error getting user record")
-//                return
-//            }
-//            
-//            self.profileRecord = r
-//            
-//            dispatch_async(dispatch_get_main_queue()) {
-//                self.userNameTextField.text = r["username"] as? String ?? ""
-//            }
-//        }
-//    }
+//                let imageURL = r["image"] as? NSURL
+//                let imageData = NSData(contentsOfURL: imageURL!)
+//                self.profileImageView.image = UIImage(data: imageData!)
+            }
+        }
+    }
+
     
     func saveRecords() {
-        //        self.profileRecord["username"] = self.userNameTextField.text
-        //        self.profileRecord["userType"] = self.pickerViewValues
-        //        self.profileRecord["image"] = self.imageURL
+                profileRecord["username"] = self.userNameTextField.text
+                profileRecord["userType"] = self.userType
+                profileRecord["image"] = CKAsset(fileURL: self.imageURL)
         
-        let profile  = Profile(username: self.userNameTextField.text!, userType: self.pickerViewValues.description, imageURL: self.imageURL)
-        
-        let profileRecord = profile.toRecord()
+//        let profile  = Profile(username: self.userNameTextField.text!, userType: self.pickerViewValues.description, imageURL: self.imageURL)
+//        
+//        let profileRecord = profile.toRecord()
         
         let container = CKContainer.defaultContainer()
         let db = container.publicCloudDatabase
