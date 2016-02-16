@@ -10,6 +10,7 @@
 		2E1BC63D1C72673B00A8A0E2 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E1BC63C1C72673B00A8A0E2 /* CloudKit.framework */; };
 		2E1BC6431C7280BA00A8A0E2 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1BC6421C7280BA00A8A0E2 /* SignUpViewController.swift */; };
 		2E1BC6451C72998E00A8A0E2 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1BC6441C72998E00A8A0E2 /* ProfileViewController.swift */; };
+		2E1BC6491C72A05000A8A0E2 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1BC6481C72A05000A8A0E2 /* Profile.swift */; };
 		CA1292781B150DF500303C8D /* RatingControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1292771B150DF500303C8D /* RatingControl.swift */; };
 		CA1902E01B10E523000271C4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1902DF1B10E523000271C4 /* AppDelegate.swift */; };
 		CA1902E21B10E523000271C4 /* MealViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1902E11B10E523000271C4 /* MealViewController.swift */; };
@@ -38,6 +39,7 @@
 		2E1BC63C1C72673B00A8A0E2 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		2E1BC6421C7280BA00A8A0E2 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		2E1BC6441C72998E00A8A0E2 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		2E1BC6481C72A05000A8A0E2 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Profile.swift; path = ../Profile.swift; sourceTree = "<group>"; };
 		CA1292771B150DF500303C8D /* RatingControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatingControl.swift; sourceTree = "<group>"; };
 		CA1902DC1B10E523000271C4 /* FoodTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoodTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA1902DF1B10E523000271C4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				CA1902DF1B10E523000271C4 /* AppDelegate.swift */,
 				2E1BC6421C7280BA00A8A0E2 /* SignUpViewController.swift */,
 				2E1BC6441C72998E00A8A0E2 /* ProfileViewController.swift */,
+				2E1BC6481C72A05000A8A0E2 /* Profile.swift */,
 				CA1902E11B10E523000271C4 /* MealViewController.swift */,
 				CA1292771B150DF500303C8D /* RatingControl.swift */,
 				CA734E341B155077001A6F80 /* Meal.swift */,
@@ -234,6 +237,7 @@
 				CA1902E01B10E523000271C4 /* AppDelegate.swift in Sources */,
 				CA5D06031B162F2300095F0F /* MealTableViewController.swift in Sources */,
 				2E1BC6451C72998E00A8A0E2 /* ProfileViewController.swift in Sources */,
+				2E1BC6491C72A05000A8A0E2 /* Profile.swift in Sources */,
 				CA5D06011B162F2300095F0F /* MealTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

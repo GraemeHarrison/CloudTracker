@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CloudKit
 
 class SignUpViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
@@ -18,12 +19,76 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, UIImagePicker
     
     let imagePicker = UIImagePickerController()
     var image = UIImage()
-    
+    var imageURL : NSURL!
     let pickerViewValues = ["Food Critic", "Causual Foodie"]
+    var userType : String!
+    
+    var userID: CKRecordID!
+    var profileRecord: CKRecord!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        prepareDelegates()
+//        fetchRecords()
+    }
+    
+    //MARK: CloudKit
+    
+//    func fetchRecords() {
+//        let db = CKContainer.defaultContainer().publicCloudDatabase
+//        db.fetchRecordWithID(self.userID) { record, error in
+//            // if version
+//            if let r = record {
+//                self.profileRecord = r
+//                
+//                dispatch_async(dispatch_get_main_queue()) {
+//                    self.userNameTextField.text = r["username"] as? String ?? ""
+//                }
+//            } else {
+//                print("error getting user record")
+//            }
+//            
+//            // guard version
+//            guard let r = record else {
+//                print("error getting user record")
+//                return
+//            }
+//            
+//            self.profileRecord = r
+//            
+//            dispatch_async(dispatch_get_main_queue()) {
+//                self.userNameTextField.text = r["username"] as? String ?? ""
+//            }
+//        }
+//    }
+    
+    func saveRecords() {
+        //        self.profileRecord["username"] = self.userNameTextField.text
+        //        self.profileRecord["userType"] = self.pickerViewValues
+        //        self.profileRecord["image"] = self.imageURL
+        
+        let profile  = Profile(username: self.userNameTextField.text!, userType: self.pickerViewValues.description, imageURL: self.imageURL)
+        
+        let profileRecord = profile.toRecord()
+        
+        let container = CKContainer.defaultContainer()
+        let db = container.publicCloudDatabase
+        db.saveRecord(profileRecord) { record, error in
+            guard record != nil else {
+                print("error saving profile")
+                return
+            }
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                //could perform segue here or something, etc.
+            }
+        }
+    }
+    
+    //MARK: Preparation
+    
+    func prepareDelegates() {
         userNameTextField.delegate = self
         imagePicker.delegate = self
         pickerView.dataSource = self
@@ -83,13 +148,18 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, UIImagePicker
     
     func setProfilePicture(image: UIImage) {
         profileImageView.image = image
-        //save image to cloud
     }
     
     //MARK: UIImagePickerControllerDelegate
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        image = info[UIImagePickerControllerEditedImage] as! UIImage
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+        
+        let data = UIImagePNGRepresentation(image)
+        let directory = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+        let path = directory.path! + "/shoe.png"
+        data!.writeToFile(path, atomically: true)
+        self.imageURL = NSURL(fileURLWithPath: path)
+        
         self.setProfilePicture(image)
         self.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -99,8 +169,9 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, UIImagePicker
     }
     
     //MARK: UIPickerViewDelegate
-    
+
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        self.userType = pickerViewValues[row]
         return pickerViewValues[row]
     }
     
@@ -125,16 +196,15 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, UIImagePicker
     //MARK: Done Button
     
     @IBAction func done(sender: AnyObject) {
+        saveRecords()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    // MARK: - Navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
+//    // MARK: - Navigation
+//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+//    }
     
 }

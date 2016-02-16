@@ -88,7 +88,7 @@
                                     <constraint firstAttribute="height" constant="35" id="Zv7-sn-2Hz"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4xc-qg-Fz5">
@@ -97,7 +97,7 @@
                                     <constraint firstAttribute="height" constant="21" id="tbm-dk-cCf"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="15"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yZY-l8-nfz">
@@ -121,6 +121,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="vzH-x7-vp3"/>
+                    <connections>
+                        <outlet property="profileImageView" destination="yZY-l8-nfz" id="ODh-q2-j0J"/>
+                        <outlet property="userTypeLabel" destination="4xc-qg-Fz5" id="Qj2-xV-bmu"/>
+                        <outlet property="usernameLabel" destination="dbg-aN-bGc" id="BqD-Fx-iTE"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hHu-38-yIt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
