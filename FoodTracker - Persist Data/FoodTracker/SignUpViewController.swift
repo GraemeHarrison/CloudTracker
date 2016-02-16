@@ -165,7 +165,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, UIImagePicker
         
         let data = UIImagePNGRepresentation(image)
         let directory = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-        let path = directory.path! + "/shoe.png"
+        let path = directory.path! + "/profile.png"
         data!.writeToFile(path, atomically: true)
         self.imageURL = NSURL(fileURLWithPath: path)
         

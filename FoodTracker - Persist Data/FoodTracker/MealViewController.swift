@@ -8,6 +8,7 @@
 //
 
 import UIKit
+import CloudKit
 
 class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: Properties
@@ -18,11 +19,14 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
     @IBOutlet weak var saveButton: UIBarButtonItem!
     
     /*
-        This value is either passed by `MealTableViewController` in `prepareForSegue(_:sender:)`
-        or constructed as part of adding a new meal.
+    This value is either passed by `MealTableViewController` in `prepareForSegue(_:sender:)`
+    or constructed as part of adding a new meal.
     */
-    var meal: Meal?
-
+    var applesMeal: ApplesMeal?
+    //    var meals: [Meal] = []
+    var meal : Meal?
+    var userID: CKRecordID?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -33,13 +37,18 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         if let meal = meal {
             navigationItem.title = meal.name
             nameTextField.text   = meal.name
-            photoImageView.image = meal.photo
+            
+            let imageURL = meal.imageURL
+            let imageData = NSData(contentsOfURL: imageURL)
+            photoImageView.image = UIImage(data: imageData!)
+            
             ratingControl.rating = meal.rating
         }
         
         // Enable the Save button only if the text field has a valid Meal name.
         checkValidMealName()
     }
+    
     
     // MARK: UITextFieldDelegate
     
@@ -53,7 +62,7 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         checkValidMealName()
         navigationItem.title = textField.text
     }
-
+    
     func textFieldDidBeginEditing(textField: UITextField) {
         // Disable the Save button while editing.
         saveButton.enabled = false
@@ -99,12 +108,42 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
     // This method lets you configure a view controller before it's presented.
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if saveButton === sender {
-            let name = nameTextField.text ?? ""
-            let photo = photoImageView.image
-            let rating = ratingControl.rating
-            
-            // Set the meal to be passed to MealListTableViewController after the unwind segue.
-            meal = Meal(name: name, photo: photo, rating: rating)
+            saveMealToCloud()
+            //            let name = nameTextField.text ?? ""
+            //            let photo = photoImageView.image
+            //            let rating = ratingControl.rating
+            //
+            //            // Set the meal to be passed to MealListTableViewController after the unwind segue.
+            //            applesMeal = ApplesMeal(name: name, photo: photo, rating: rating)
+        }
+    }
+    
+    func saveMealToCloud() {
+        // should validate inputs first
+        let name = nameTextField.text ?? ""
+        let rating = ratingControl.rating
+        
+        //        let imageData = NSData(data: UIImagePNGRepresentation(photoImageView.image!)!)
+        //        let imageURL = NSURL(fileURLWithPath: "meal.png")
+        //        imageData.writeToURL(imageURL, atomically: true)
+        
+        let data = UIImagePNGRepresentation(photoImageView.image!)
+        let directory = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+        let path = directory.path! + "/meal.png"
+        data!.writeToFile(path, atomically: true)
+        let imageURL = NSURL(fileURLWithPath: path)
+        
+        let meal = Meal(name: name, rating: rating, imageURL: imageURL)
+        
+        let record = meal.toRecord()
+        
+        let container = CKContainer.defaultContainer()
+        let db = container.publicCloudDatabase
+        db.saveRecord(record) { record, error in
+            if let e = error {
+                print("error saving meal: \(e.localizedDescription)")
+                return
+            }
         }
     }
     
@@ -125,6 +164,6 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         
         presentViewController(imagePickerController, animated: true, completion: nil)
     }
-
+    
 }
 

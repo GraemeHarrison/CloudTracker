@@ -2,67 +2,47 @@
 //  Meal.swift
 //  FoodTracker
 //
-//  Created by Jane Appleseed on 5/26/15.
-//  Copyright © 2015 Apple Inc. All rights reserved.
-//  See LICENSE.txt for this sample’s licensing information.
+//  Created by Graeme Harrison on 2016-02-16.
+//  Copyright © 2016 Apple Inc. All rights reserved.
 //
 
-import UIKit
+import Foundation
+import CloudKit
 
-class Meal: NSObject, NSCoding {
-    // MARK: Properties
-    
-    var name: String
-    var photo: UIImage?
-    var rating: Int
-    
-    // MARK: Archiving Paths
-    
-    static let DocumentsDirectory = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("meals")
-    
-    // MARK: Types
-    
-    struct PropertyKey {
-        static let nameKey = "name"
-        static let photoKey = "photo"
-        static let ratingKey = "rating"
-    }
 
-    // MARK: Initialization
+struct Meal {
+    let name: String
+    let imageURL: NSURL
+    let rating: Int
     
-    init?(name: String, photo: UIImage?, rating: Int) {
-        // Initialize stored properties.
-        self.name = name
-        self.photo = photo
+    init(name: String, rating: Int, imageURL: NSURL) {
         self.rating = rating
-        
-        super.init()
-        
-        // Initialization should fail if there is no name or if the rating is negative.
-        if name.isEmpty || rating < 0 {
-            return nil
+        self.name = name
+        self.imageURL = imageURL
+    }
+    
+    init(record: CKRecord) {
+        if let name = record["name"] as? String {
+            self.name = name
+        } else {
+            self.name = ""
         }
+        
+        let rating = record["rating"] as? Int
+        self.rating = rating!
+        
+        let imageAsset = record["image"] as! CKAsset
+        self.imageURL = imageAsset.fileURL
     }
     
-    // MARK: NSCoding
-    
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(name, forKey: PropertyKey.nameKey)
-        aCoder.encodeObject(photo, forKey: PropertyKey.photoKey)
-        aCoder.encodeInteger(rating, forKey: PropertyKey.ratingKey)
+    func toRecord() -> CKRecord {
+        let record = CKRecord(recordType: "Meal")
+        
+        record["name"] = self.name
+        record["rating"] = self.rating
+        let imageAsset = CKAsset(fileURL: self.imageURL)
+        record["image"] = imageAsset
+        
+        return record
     }
-    
-    required convenience init?(coder aDecoder: NSCoder) {
-        let name = aDecoder.decodeObjectForKey(PropertyKey.nameKey) as! String
-        
-        // Because photo is an optional property of Meal, use conditional cast.
-        let photo = aDecoder.decodeObjectForKey(PropertyKey.photoKey) as? UIImage
-        
-        let rating = aDecoder.decodeIntegerForKey(PropertyKey.ratingKey)
-        
-        // Must call designated initializer.
-        self.init(name: name, photo: photo, rating: rating)
-    }
-
 }
